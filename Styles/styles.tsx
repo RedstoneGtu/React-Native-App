@@ -13,5 +13,19 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'flex-start',
     flexDirection: 'row',
+  },container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: "center",
+  },
+  label: {
+    margin: 8,
   },
 });

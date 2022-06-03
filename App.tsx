@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   Image,
+  BackHandler,
 } from 'react-native';
 
 import base64 from 'react-native-base64';
@@ -21,6 +22,10 @@ import {LogBox} from 'react-native';
 var Sound = require('react-native-sound');
 
 Sound.setCategory('Playback');
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
 
 
 var ding = new Sound('test.mp3', Sound.MAIN_BUNDLE, (error) => {
@@ -67,35 +72,16 @@ function BoolToString(input: boolean) {
 export default function App() {
   //Is a device connected?
   const [isConnected, setIsConnected] = useState(false);
-  const [connectText, setConnect] = useState("SELAMUN ALEYKUM");
+  const [connectText, setConnect] = useState("Welcome!!!");
   const [con , setCon] = useState(false);
   //What device is connected?
   const [connectedDevice, setConnectedDevice] = useState<Device>();
-  let stringOFText = "";
+
   let arr1 = [];
-  let min1 = 66666;
-  let max1 = 0;
-  let arr2 = [];
-  let min2 = 66666;
-  let max2 = 0;
-  let arr3 = [];
-  let min3 = 66666;
-  let max3 = 0;
-  let arr4 = [];
-  let min4 = 66666;
-  let max4 = 0;
-  let norm1 = [];
-  let norm2 = [];
-  let norm3 = [];
-  let norm4 = [];
 
   const [message, setMessage] = useState('Nothing Yet');
   const [search, setSearch] = useState('0');
-  const [message1, setMessage1] = useState('Nothing Yet');
-  const [message2, setMessage2] = useState('Nothing Yet');
-  const [message3, setMessage3] = useState('Nothing Yet');
   const [boxvalue, setBoxValue] = useState(false);
-  const [messageTest, setmessageTest] = useState('Nothing Yettt');
 
   const [ch0, setch0] = useState(true);
   const [ch1, setch1] = useState(false);
@@ -134,7 +120,13 @@ export default function App() {
             base64: arr1
           })
           .then(function (response) {
-            alert(response);
+
+            //alert(response);
+            alert(" " + response.data);
+            setConnect(" " + response.data);
+            //delay(10000).then(() => console.log('ran after 1 second1 passed'));
+            //BackHandler.exitApp();
+            arr1 = [];
           })
           .catch(function (error) {
             alert(error);
@@ -184,7 +176,7 @@ export default function App() {
       // stop scanning devices after 5 seconds
       setTimeout(() => {
         BLTManager.stopDeviceScan();
-        setConnect("Could not find");
+        //setConnect("Could not find");
       }, 5000);
     });
   }
@@ -199,9 +191,44 @@ export default function App() {
         BLTManager.cancelTransaction('messagetransaction');
         BLTManager.cancelTransaction('nightmodetransaction');
 
-        BLTManager.cancelDeviceConnection(connectedDevice.id).then(() =>
+        BLTManager.cancelDeviceConnection(connectedDevice.id).then(() => {
 
-          setConnect("DC Completed"),
+        alert("Disconnected");
+
+        /*if(ch0){
+          axios.post('https://redstone-gtu.herokuapp.com/sendvalue', {
+            base64: arr1,
+            result:[ch1,ch2,ch3,ch4,ch5,ch6]
+          })
+          .then(function (response) {
+            alert(response);
+          })
+          .catch(function (error) {
+            alert(error);
+          });
+        }
+        else{
+          axios.post('https://redstone-gtu.herokuapp.com/sendvalue', {
+            base64: arr1
+          })
+          .then(function (response) {
+            alert(response);
+            alert("You should listen " + response.data);
+            //delay(10000).then(() => console.log('ran after 1 second1 passed'));
+            //BackHandler.exitApp();
+          })
+          .catch(function (error) {
+            alert(error);
+          });
+        }*/
+
+        arr1 = [];
+
+
+
+
+          //setConnect("DC Completed");
+        }
         );
       }
 
@@ -217,6 +244,7 @@ export default function App() {
 
   async function connectDevice(device: Device) {
     console.log('connecting to Device:', device.name);
+    setConnect("Calculating...");
       device
         .connect()
         .then(device => {
@@ -240,7 +268,7 @@ export default function App() {
               });
 
 
-
+              alert("Disconnected");
 
               if(ch0){
                 axios.post('https://redstone-gtu.herokuapp.com/sendvalue', {
@@ -259,7 +287,11 @@ export default function App() {
                   base64: arr1
                 })
                 .then(function (response) {
-                  alert(response);
+                  //alert(response);
+                  alert(" " + response.data);
+                  setConnect(" " + response.data);
+
+                  //BackHandler.exitApp();
                 })
                 .catch(function (error) {
                   alert(error);
@@ -267,7 +299,7 @@ export default function App() {
               }
 
 
-            setConnect("Device DC");
+            //setConnect("Device DC");
             setIsConnected(false);
           });
 
@@ -281,10 +313,14 @@ export default function App() {
                   let number = valenc?.value;
                   let num = number;
 
+                  /*
+                    var decodedString = atob(num);
+                    setConnect(decodedString);
+                  */
                   arr1.push(num);
                   setMessage(num);
 
-                  setConnect(valenc?.value);
+                  //setConnect(valenc?.value);
                 });
 
         }, 5);
@@ -297,7 +333,7 @@ export default function App() {
               SERVICE_UUID,
               MESSAGE_UUID,
               (error, characteristic) => {
-                setConnect("Message Update receiveddasdsadsadas");
+                //setConnect("Message Update");
                 if (characteristic?.value != null) {
                   setMessage(base64.decode(characteristic?.value));
                   console.log(
@@ -319,16 +355,16 @@ export default function App() {
   }
 
   return (
-    <View>
-
-    <Image source={{uri: 'https://kocaeliuod.org.tr/dosya/sponsor/370x370/gebze-teknik-universitesi.png'}}
-     style={{width: 300, height: 300}} />
-
+    <View style={styles.container}>
+      <View style={styles.rowView}>
+        <Image source={{uri: 'https://kocaeliuod.org.tr/dosya/sponsor/370x370/gebze-teknik-universitesi.png'}}
+        style={{width: 200, height: 200}} />
+     </View>
       <View style={{paddingBottom: 10}}></View>
 
       {/* Title */}
       <View style={styles.rowView}>
-        <Text style={styles.titleText}>BLE Example</Text>
+        <Text style={styles.titleText}>REDSTONE</Text>
       </View>
 
       <View style={{paddingBottom: 20}}></View>
@@ -356,10 +392,12 @@ export default function App() {
         </TouchableOpacity>
       </View>
 
+      <View style={{paddingBottom: 10}}></View>
+      <View style={styles.rowView}>
+        <Text style={styles.baseText}>{connectText}</Text>
 
-      <Text style={styles.baseText}>{connectText}</Text>
-
-      <View style={{paddingBottom: 20}}></View>
+      </View>
+      <View style={{paddingBottom: 10}}></View>
 
       {/* Monitored Value */}
 
@@ -382,7 +420,7 @@ export default function App() {
      {
        ch0 ?
 
-       <View>
+       <View style={styles.allcheckBox}>
          <View style={styles.checkboxContainer}>
           <CheckBox
             value={ch1}
@@ -436,6 +474,8 @@ export default function App() {
           />
           <Text style={styles.label}>Hiphop</Text>
         </View>
+
+
 
 
 

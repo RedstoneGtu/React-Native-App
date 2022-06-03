@@ -28,4 +28,12 @@ export const styles = StyleSheet.create({
   label: {
     margin: 8,
   },
+  flex:{
+
+  },
+  allcheckBox:{
+    flex: 1,
+    flexWrap: "wrap",
+    flexDirection: 'row',
+  },
 });
